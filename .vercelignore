@@ -1,0 +1,5 @@
+private
+*.php
+.env
+.env.*
+!.env.example

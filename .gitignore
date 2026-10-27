@@ -1,0 +1,5 @@
+dist/
+.env
+.env.local
+private/config.php
+node_modules/

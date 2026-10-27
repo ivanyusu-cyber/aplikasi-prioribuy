@@ -1,0 +1,106 @@
+/* PrioriBuy — Mode Malam (dark mode) untuk website.
+   Dihasilkan dari style.css (aturan warna terang -> padanan gelap) + penyesuaian manual di bagian bawah.
+   Aktif bila <html data-theme="dark">. Diatur oleh assets/js/theme.js. */
+[data-theme="dark"]{
+  color-scheme:dark;
+  --ink:#E6EAF7; --ink-soft:#AEB9D6; --ink-faint:#8693B3;
+  --blue:#6D9BFF; --blue-deep:#8FB2FF; --blue-pastel:#2B4A8E; --blue-bg:#16264a;
+  --green:#4FBF86; --green-pastel:#1c4a35; --green-bg:#12281f;
+  --pink:#F06BA9; --pink-pastel:#4a2038; --pink-bg:#2b1626;
+  --white:#161f36; --soft-white:#0e1424;
+  --pb-sky:#101c38; --pb-blue-deep:#8FB2FF;
+  --shadow-sm:0 4px 16px rgba(0,0,0,.35); --shadow-md:0 12px 32px rgba(0,0,0,.45); --shadow-lg:0 24px 60px rgba(0,0,0,.55);
+}
+[data-theme="dark"] body{background:var(--soft-white);color:var(--ink)}
+[data-theme="dark"] h1,[data-theme="dark"] h2,[data-theme="dark"] h3,[data-theme="dark"] h4,[data-theme="dark"] h5,[data-theme="dark"] h6{color:var(--ink)}
+[data-theme="dark"] p{color:var(--ink-soft)}
+
+[data-theme="dark"] .eyebrow--pink{color:#dd9cbd}
+[data-theme="dark"] .eyebrow--green{color:#9edcbd}
+[data-theme="dark"] .btn-pb-outline{background:#0d121e;border:1.5px solid #314369}
+[data-theme="dark"] .navbar-pb.scrolled{background:rgba(14,20,36,0.85);box-shadow:0 6px 24px rgba(0,0,0,0.21)}
+[data-theme="dark"] .hero{background:linear-gradient(180deg,#0f1a29 0%, var(--soft-white) 78%)}
+[data-theme="dark"] .hero-social .avatars span{border:2px solid #2e3a56}
+[data-theme="dark"] .hero.hero--home{background:linear-gradient(180deg,var(--pb-sky) 0%, #0d121e 100%)}
+[data-theme="dark"] .hero--home .eyebrow--blue{background:#0d121e}
+[data-theme="dark"] .priority-demo{background:#0d121e;border:1px solid #2e4063}
+[data-theme="dark"] .priority-pill{border:1.5px solid #344464;background:#0d121e}
+[data-theme="dark"] .priority-item-card{border:1px solid #2e4063}
+[data-theme="dark"] .priority-item-card .item-note.tinggi{color:#dd9cbd}
+[data-theme="dark"] .priority-item-card .item-note.rendah{color:#9edcbd}
+[data-theme="dark"] .phone-screen{background:linear-gradient(160deg,#0f1626,#0d121e 60%)}
+[data-theme="dark"] .mock-card{background:#0d121e;box-shadow:0 6px 16px rgba(0,0,0,0.18);border:1px solid #2b3964}
+[data-theme="dark"] .mock-bar{background:#161f2f}
+[data-theme="dark"] .chip-tinggi{color:#dd9cbd}
+[data-theme="dark"] .chip-rendah{color:#9edcbd}
+[data-theme="dark"] .problem-card{background:#0d121e;border:1px solid #2b3964}
+[data-theme="dark"] .solution-strip{background:linear-gradient(135deg,#121f2f,#14102a)}
+[data-theme="dark"] .feature-card{background:#0d121e;border:1px solid #2b3964}
+[data-theme="dark"] .f-green{color:#9edcbd}
+[data-theme="dark"] .f-pink{color:#dd9cbd}
+[data-theme="dark"] .riwayat-section{background:linear-gradient(180deg,#0d121e,#0f1a29)}
+[data-theme="dark"] .check-list .ci{color:#9edcbd}
+[data-theme="dark"] .step-row::before{background:repeating-linear-gradient(to bottom, #192842 0, #192842 6px, transparent 6px, transparent 12px)}
+[data-theme="dark"] .step-num{background:#0d121e}
+[data-theme="dark"] .preview-tab-btn{border:1.5px solid #344464;background:#0d121e}
+[data-theme="dark"] .preview-tab-btn.active{background:#25315c}
+[data-theme="dark"] .testi-card{background:#0d121e;border:1px solid #2b3964}
+[data-theme="dark"] .accordion-pb .accordion-button{background:#0d121e}
+[data-theme="dark"] .cta-final::before{background:radial-gradient(circle at 20% 20%, rgba(14,20,36,0.18), transparent 40%),
+             radial-gradient(circle at 80% 80%, rgba(14,20,36,0.14), transparent 40%)}
+[data-theme="dark"] .btn-cta-white{background:#0d121e}
+[data-theme="dark"] footer{background:#25315c}
+[data-theme="dark"] footer .social-icon{background:rgba(14,20,36,0.08)}
+[data-theme="dark"] footer .copyright{color:#afb4ca}
+[data-theme="dark"] .back-to-top{background:#25315c}
+[data-theme="dark"] .page-hero{background:linear-gradient(180deg,#0f1a29 0%, var(--soft-white) 100%)}
+[data-theme="dark"] .hero.premium-hero{background:linear-gradient(180deg,#14102a 0%, var(--soft-white) 82%)}
+[data-theme="dark"] .form-card{background:#0d121e;border:1px solid #2b3964}
+[data-theme="dark"] .form-control-pb{border:1.5px solid #314369;background:#0d121e}
+[data-theme="dark"] .alert-pb--error{color:#dd9cbd}
+[data-theme="dark"] .alert-pb--warn{background:#312813;color:#ffd67a;border:1px solid #7b6435}
+[data-theme="dark"] .alert-pb--ok{color:#9edcbd}
+[data-theme="dark"] .summary-card{background:#0d121e;border:1px solid #2b3964}
+[data-theme="dark"] .summary-row{border-bottom:1px dashed #344464}
+[data-theme="dark"] .qris-frame{background:#0d121e;border:1.5px solid #344464}
+@media (max-width:991px){
+[data-theme="dark"] .navbar-pb .navbar-collapse{background:#0d121e}
+}
+
+/* ---------- penyesuaian manual ---------- */
+[data-theme="dark"] footer{background:#0a0f1c;color:#C7CCE0}
+[data-theme="dark"] .navbar-pb .nav-link{color:var(--ink-soft)}
+[data-theme="dark"] .navbar-pb .nav-link:hover,[data-theme="dark"] .navbar-pb .nav-link.active{color:var(--ink)}
+[data-theme="dark"] .navbar-toggler{color:var(--ink)}
+[data-theme="dark"] .navbar-pb .navbar-collapse{background:transparent}
+@media (max-width:991.98px){[data-theme="dark"] .navbar-pb .navbar-collapse.show,[data-theme="dark"] .navbar-pb .navbar-collapse.collapsing{background:#121a2e;border-radius:14px;padding:10px 14px;margin-top:8px}}
+[data-theme="dark"] .form-control-pb,[data-theme="dark"] .form-control,[data-theme="dark"] .form-select{background-color:#101830;color:var(--ink);border-color:#2c3a60}
+[data-theme="dark"] .form-control-pb::placeholder,[data-theme="dark"] .form-control::placeholder{color:#7886a8}
+[data-theme="dark"] .accordion-pb .accordion-button{background:#161f36;color:var(--ink)}
+[data-theme="dark"] .accordion-pb .accordion-button:not(.collapsed){color:var(--blue-deep)}
+[data-theme="dark"] .accordion-pb .accordion-body{background:#161f36;color:var(--ink-soft)}
+[data-theme="dark"] .accordion-button::after{filter:invert(1) grayscale(1) brightness(1.6)}
+[data-theme="dark"] .btn-pb-outline{color:var(--ink)}
+[data-theme="dark"] .btn-cta-white{background:#fff;color:#2455D6}
+[data-theme="dark"] a{color:var(--blue-deep)}
+[data-theme="dark"] .btn-pb-primary,[data-theme="dark"] .btn-premium,[data-theme="dark"] .btn-pb-primary:hover,[data-theme="dark"] .btn-premium:hover,[data-theme="dark"] .btn-cta-white{color:#fff}
+[data-theme="dark"] .btn-cta-white{color:#2455D6}
+[data-theme="dark"] footer a.footer-link{color:#AEB4D1}
+[data-theme="dark"] footer a.footer-link:hover{color:#fff}
+[data-theme="dark"] .priority-pill{color:var(--ink-soft)}
+[data-theme="dark"] .priority-pill.active{color:#fff}
+[data-theme="dark"] img.footer-logo{filter:none}
+[data-theme="dark"] ::selection{background:#2b4a8f;color:#fff}
+
+/* ---------- perbaikan kontras & gaya inline ---------- */
+[data-theme="dark"] [style*="background:#fff"],[data-theme="dark"] [style*="background: #fff"]{background:var(--white) !important}
+[data-theme="dark"] [style*="linear-gradient(180deg,#fff"]{background:var(--soft-white) !important}
+[data-theme="dark"] [style*="color:#B23D78"]{color:#F48CBB !important}
+[data-theme="dark"] .eyebrow--blue{color:#9DBBFF}
+[data-theme="dark"] .priority-pill[data-level="tinggi"].active{background:#C93878;border-color:#C93878}
+[data-theme="dark"] .priority-pill[data-level="sedang"].active{background:#2F63E0;border-color:#2F63E0}
+[data-theme="dark"] .priority-pill[data-level="rendah"].active{background:#2C8A5C;border-color:#2C8A5C}
+[data-theme="dark"] .chip-tinggi,[data-theme="dark"] .mock-chip.chip-tinggi{color:#FFC2DD}
+[data-theme="dark"] .chip-sedang,[data-theme="dark"] .mock-chip.chip-sedang{color:#D6E4FF}
+[data-theme="dark"] .chip-rendah,[data-theme="dark"] .mock-chip.chip-rendah{color:#BDF0D5}
+[data-theme="dark"] .testi-author .avatar,[data-theme="dark"] .hero-social .avatars span{color:#0e1424}

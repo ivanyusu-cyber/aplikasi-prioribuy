@@ -1,0 +1,27 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "node scripts/build.js",
+  "outputDirectory": "dist",
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/mulai-premium.php", "destination": "/konsultasi.html", "permanent": false },
+    { "source": "/pembayaran.php", "destination": "/konsultasi.html", "permanent": false },
+    { "source": "/konfirmasi.php", "destination": "/konsultasi.html", "permanent": false }
+  ],
+  "headers": [
+    { "source": "/sw.js", "headers": [
+      { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+      { "key": "Service-Worker-Allowed", "value": "/" } ] },
+    { "source": "/manifest.json", "headers": [
+      { "key": "Content-Type", "value": "application/manifest+json" },
+      { "key": "Cache-Control", "value": "no-cache" } ] },
+    { "source": "/(app|konsultasi|konsultan).html", "headers": [ { "key": "Cache-Control", "value": "no-cache" } ] },
+    { "source": "/assets/(.*)", "headers": [ { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" } ] },
+    { "source": "/(.*)", "headers": [
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+      { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+      { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" } ] }
+  ]
+}

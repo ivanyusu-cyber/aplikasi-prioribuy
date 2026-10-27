@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PrioriBuy Smart Spending Planner</title>
+<meta name="description" content="Aplikasi perencana pembelian untuk membedakan kebutuhan dan keinginan, menyusun skala prioritas, dan menjaga uang saku tetap terkendali.">
+<meta name="theme-color" content="#0f56f7">
+<script src="assets/js/theme.js"></script>
+<link rel="stylesheet" href="assets/css/theme.css">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PrioriBuy">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="assets/img/favicon-48.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+/* ============================================================
+   PrioriBuy Planner — token desain mengikuti website PrioriBuy
+   Prioritas: Tinggi = pink, Sedang = biru, Rendah = hijau
+   ============================================================ */
+:root{
+  --pb-blue:#4b82ff; --pb-blue-deep:#0f56f7; --pb-sky:#ebfaff; --pb-gold:#fec600;
+  --ink:#1C2541; --ink-soft:#5B6B8C; --ink-faint:#8C9AB8; --line:#E6ECF7;
+  --tinggi:#E85D9E; --tinggi-bg:#FFF1F7; --tinggi-ink:#B23D78;
+  --sedang:#3E7BFA; --sedang-bg:#EEF5FF; --sedang-ink:#2455D6;
+  --rendah:#3FA873; --rendah-bg:#EFF9F0; --rendah-ink:#2C7A53;
+  --gold-bg:#FFF6D6; --gold-ink:#7A5B00;
+  --danger:#D64545; --danger-bg:#FDECEC;
+  --r-lg:20px; --r-md:14px;
+  --shadow-sm:0 4px 16px rgba(28,37,65,.06); --shadow-md:0 12px 32px rgba(28,37,65,.10);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --surface:#fff; --surface-2:#F7F9FE; --track:#E8EEFB; --line-2:#DCE3F2;
+}
+/* ---------- Mode malam ---------- */
+html[data-theme="dark"]{color-scheme:dark;--ink:#E6EAF7;--ink-soft:#AEB9D6;--ink-faint:#8693B3;--line:#2a3556;--line-2:#34436b;
+  --surface:#161f36;--surface-2:#1b2644;--track:#26335a;--pb-sky:#13213f;
+  --tinggi-bg:#2b1626;--tinggi-ink:#F48CBB;--sedang-bg:#16264a;--sedang-ink:#8FB2FF;--rendah-bg:#12281f;--rendah-ink:#7ED3A5;
+  --gold-bg:#3a3010;--gold-ink:#F3D36B;--danger-bg:#3a1b1d;
+  --shadow-sm:0 4px 16px rgba(0,0,0,.35);--shadow-md:0 12px 32px rgba(0,0,0,.5)}
+html[data-theme="dark"] body{background:#0e1424}
+html[data-theme="dark"] .pb-nav{background:rgba(14,20,36,.88)}
+html[data-theme="dark"] .link-pb,html[data-theme="dark"] .big-total,html[data-theme="dark"] .item-price b,html[data-theme="dark"] .demo-card .pr,
+html[data-theme="dark"] .hero-accent,html[data-theme="dark"] .total-preview b,html[data-theme="dark"] .input-group-text,html[data-theme="dark"] .eyebrow,
+html[data-theme="dark"] .chip-kebutuhan,html[data-theme="dark"] .item .ib.k-kebutuhan,html[data-theme="dark"] .auth-tabs button.active{color:#8FB2FF}
+html[data-theme="dark"] .alert-pb.over,html[data-theme="dark"] .cdn-warning{color:#ffb4b4}
+html[data-theme="dark"] .btn-pb-outline:hover{color:#8FB2FF}
+html[data-theme="dark"] .boot{background:#0e1424}
+html[data-theme="dark"] .form-control::placeholder{color:#7886a8}
+html[data-theme="dark"] .form-control,html[data-theme="dark"] .form-select{background-color:#101830}
+html[data-theme="dark"] .item-note{background:#1b2644}
+html[data-theme="dark"] .meter .m-spent{background:#4b82ff}html[data-theme="dark"] .meter .m-plan{background:#6D9BFF}
+html[data-theme="dark"] .toast-body{color:var(--ink)}
+html[data-theme="dark"] .pill[data-level="tinggi"].active{background:#C93878;border-color:#C93878}
+html[data-theme="dark"] .pill[data-level="sedang"].active{background:#2F63E0;border-color:#2F63E0}
+html[data-theme="dark"] .pill[data-level="rendah"].active{background:#2C8A5C;border-color:#2C8A5C}
+html[data-theme="dark"] [data-action="clear"]{color:#ff9a9a !important}
+html[data-theme="dark"] .btn-close{filter:invert(1) grayscale(1) brightness(1.8)}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);
+  background:linear-gradient(180deg,var(--pb-sky) 0,var(--surface) 380px) no-repeat,var(--surface);min-height:100vh;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4,h5,h6{font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+p{color:var(--ink-soft);line-height:1.7}
+a{text-decoration:none}
+.link-pb{color:var(--pb-blue-deep)}
+.link-pb:hover{color:#0a3fb8}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important;scroll-behavior:auto !important}}
+
+/* ---------- tombol ---------- */
+.btn-pb,.btn-pb-outline,.btn-pb-danger{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  font-weight:600;font-size:.94rem;padding:.65rem 1.4rem;border-radius:50px;border:1.5px solid transparent;
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease),background .2s var(--ease);cursor:pointer;line-height:1.3}
+.btn-pb{background:var(--pb-blue-deep);color:#fff;box-shadow:0 8px 20px rgba(15,86,247,.25)}
+.btn-pb:hover,.btn-pb:focus-visible{background:#0b49d1;color:#fff;transform:translateY(-1px)}
+.btn-pb-outline{background:var(--surface);color:var(--ink);border-color:var(--line-2)}
+.btn-pb-outline:hover{border-color:var(--pb-blue);color:var(--pb-blue-deep);transform:translateY(-1px)}
+.btn-pb-danger{background:var(--danger);color:#fff;box-shadow:0 8px 20px rgba(214,69,69,.25)}
+.btn-pb-danger:hover{background:#bb3535;color:#fff}
+.btn-sm-pb{padding:.4rem .95rem;font-size:.82rem}
+.btn-pb:disabled,.btn-pb-outline:disabled{opacity:.6;pointer-events:none}
+.btn-icon{width:36px;height:36px;padding:0;border-radius:50%;display:inline-grid;place-items:center;background:var(--surface);
+  border:1.5px solid var(--line-2);color:var(--ink-soft);transition:all .2s var(--ease)}
+.btn-icon:hover{border-color:var(--pb-blue);color:var(--pb-blue-deep)}
+.btn-icon.danger:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-bg)}
+:focus-visible{outline:2px solid var(--pb-blue-deep);outline-offset:2px}
+
+/* ---------- kartu & form ---------- */
+.pb-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);padding:1.25rem}
+.pb-card h2,.pb-card h3{font-size:1.02rem}
+.form-label{font-weight:600;font-size:.86rem;color:var(--ink);margin-bottom:.35rem}
+.form-control,.form-select{border-radius:var(--r-md);border:1.5px solid var(--line-2);padding:.62rem .9rem;font-size:.94rem;color:var(--ink)}
+.form-control:focus,.form-select:focus{border-color:var(--pb-blue);box-shadow:0 0 0 .22rem rgba(75,130,255,.18)}
+.input-group>.input-group-text{border-radius:var(--r-md) 0 0 var(--r-md);border:1.5px solid var(--line-2);border-right:0;background:var(--pb-sky);color:var(--pb-blue-deep);font-weight:600}
+.input-group>.form-control{border-radius:0 var(--r-md) var(--r-md) 0}
+.input-group>.btn-eye{border:1.5px solid var(--line-2);border-left:0;border-radius:0 var(--r-md) var(--r-md) 0;background:var(--surface);color:var(--ink-soft)}
+.input-group>.form-control.has-eye{border-radius:var(--r-md) 0 0 var(--r-md)}
+.form-text,.hint{font-size:.78rem;color:var(--ink-faint)}
+.invalid-feedback{font-size:.78rem}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:7px 16px;border-radius:50px;background:var(--surface);color:var(--pb-blue-deep);box-shadow:inset 0 0 0 1px rgba(75,130,255,.25);margin-bottom:16px}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--pb-gold);display:inline-block}
+
+/* ---------- chip ---------- */
+.chip{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:600;padding:.2rem .65rem;border-radius:50px;white-space:nowrap}
+.chip-tinggi{background:var(--tinggi-bg);color:var(--tinggi-ink)}
+.chip-sedang{background:var(--sedang-bg);color:var(--sedang-ink)}
+.chip-rendah{background:var(--rendah-bg);color:var(--rendah-ink)}
+.chip-kebutuhan{background:var(--pb-sky);color:var(--pb-blue-deep)}
+.chip-keinginan{background:var(--gold-bg);color:var(--gold-ink)}
+
+/* ---------- boot ---------- */
+.boot{position:fixed;inset:0;display:grid;place-items:center;background:var(--surface);z-index:2000;transition:opacity .35s var(--ease)}
+.boot.hide{opacity:0;pointer-events:none}
+.boot img{width:84px;height:84px;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.93);opacity:.7}}
+.fade-in{animation:fadeIn .35s var(--ease)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- halaman masuk ---------- */
+.auth h1{font-size:clamp(1.9rem,3.6vw,2.7rem);line-height:1.2;margin-bottom:14px}
+.hero-accent{color:var(--pb-blue-deep);background:linear-gradient(transparent 82%,var(--pb-gold) 82%)}
+.auth-tabs{display:flex;background:var(--pb-sky);border-radius:50px;padding:4px;margin-bottom:1.25rem}
+.auth-tabs button{flex:1;border:0;background:transparent;border-radius:50px;padding:.55rem;font-weight:600;font-size:.9rem;color:var(--ink-soft);transition:all .2s var(--ease)}
+.auth-tabs button.active{background:var(--surface);color:var(--pb-blue-deep);box-shadow:var(--shadow-sm)}
+.demo{max-width:440px}
+.demo .demo-label{font-size:.74rem;font-weight:600;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.pills{display:flex;gap:8px;margin-bottom:14px}
+.pill{flex:1;border:1.5px solid var(--line-2);background:var(--surface);border-radius:50px;padding:8px 0;font-size:.84rem;font-weight:600;color:var(--ink-soft);cursor:pointer;transition:all .2s var(--ease)}
+.pill[data-level="tinggi"].active{background:var(--tinggi);border-color:var(--tinggi);color:#fff;box-shadow:0 6px 16px rgba(232,93,158,.35)}
+.pill[data-level="sedang"].active{background:var(--sedang);border-color:var(--sedang);color:#fff;box-shadow:0 6px 16px rgba(62,123,250,.35)}
+.pill[data-level="rendah"].active{background:var(--rendah);border-color:var(--rendah);color:#fff;box-shadow:0 6px 16px rgba(63,168,115,.35)}
+.demo-card{display:flex;gap:14px;align-items:center;background:var(--surface-2);border-radius:var(--r-md);padding:14px;border-left:5px solid var(--c,var(--tinggi))}
+.demo-card .ib{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.3rem;flex:none;background:var(--bg);color:var(--ink)}
+.demo-card[data-level="tinggi"]{--c:var(--tinggi);--bg:var(--tinggi-bg)}
+.demo-card[data-level="sedang"]{--c:var(--sedang);--bg:var(--sedang-bg)}
+.demo-card[data-level="rendah"]{--c:var(--rendah);--bg:var(--rendah-bg)}
+.demo-card .t{font-weight:600}.demo-card .pr{font-weight:700;color:var(--pb-blue-deep)}
+.demo-card .nt{font-size:.8rem;color:var(--ink-soft);margin-top:4px;line-height:1.5}
+
+/* ---------- navbar aplikasi ---------- */
+.pb-nav{background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:1030;padding:.6rem 0;padding-top:calc(.6rem + env(safe-area-inset-top))}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--pb-blue-deep);color:#fff;display:inline-grid;place-items:center;font-weight:700;font-size:.85rem}
+.user-btn{display:flex;align-items:center;gap:.55rem;background:var(--surface);border:1.5px solid var(--line-2);border-radius:50px;padding:.25rem .85rem .25rem .3rem;font-weight:600;font-size:.88rem;color:var(--ink)}
+.user-btn:hover{border-color:var(--pb-blue)}
+.dropdown-menu{border-radius:var(--r-md);border:1px solid var(--line);box-shadow:var(--shadow-md);padding:.4rem;font-size:.9rem}
+.dropdown-item{border-radius:10px;padding:.5rem .75rem;display:flex;align-items:center;gap:.6rem}
+.badge-offline{background:var(--gold-bg);color:var(--gold-ink);font-size:.72rem;font-weight:600;border-radius:50px;padding:.25rem .7rem}
+
+/* ---------- dashboard ---------- */
+.sec-title{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 .6rem}
+.big-total{font-size:clamp(1.7rem,3.2vw,2.2rem);font-weight:800;color:var(--pb-blue-deep);letter-spacing:-.03em;line-height:1.1}
+.split{display:flex;height:10px;border-radius:50px;overflow:hidden;background:var(--track)}
+.split .s-keb{background:var(--pb-blue)}.split .s-ing{background:var(--pb-gold)}
+.legend{display:flex;gap:1.1rem;flex-wrap:wrap;font-size:.8rem;color:var(--ink-soft)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.35rem}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:.9rem 1rem;height:100%;box-shadow:var(--shadow-sm)}
+.tile .l{font-size:.74rem;color:var(--ink-soft);font-weight:500;display:flex;align-items:center;gap:.4rem}
+.tile .v{font-size:1.45rem;font-weight:700;line-height:1.2;margin-top:.15rem}
+.tile .s{font-size:.72rem;color:var(--ink-faint)}
+.meter{display:flex;height:12px;border-radius:50px;background:var(--track);overflow:hidden}
+.meter .m-spent{background:var(--pb-blue-deep)}.meter .m-plan{background:var(--pb-blue);opacity:.65}
+.meter.over .m-spent,.meter.over .m-plan{background:var(--danger);opacity:1}
+.meter.warn .m-spent{background:#c99a00}.meter.warn .m-plan{background:var(--pb-gold);opacity:1}
+.kv{display:flex;justify-content:space-between;gap:1rem;font-size:.88rem;padding:.28rem 0}
+.kv span:first-child{color:var(--ink-soft)}.kv b{font-weight:600}
+.alert-pb{border-radius:var(--r-md);padding:.7rem .9rem;font-size:.84rem;display:flex;gap:.6rem;align-items:flex-start;line-height:1.5;margin-top:.8rem}
+.alert-pb.over{background:var(--danger-bg);color:#9c2f2f}
+.alert-pb.warn{background:var(--gold-bg);color:var(--gold-ink)}
+.alert-pb.ok{background:var(--rendah-bg);color:var(--rendah-ink)}
+.alert-pb i{margin-top:.15rem}
+
+/* ---------- daftar ---------- */
+.toolbar .form-control,.toolbar .form-select{font-size:.88rem;padding:.52rem .8rem}
+.search-wrap{position:relative}.search-wrap i{position:absolute;left:.95rem;top:50%;transform:translateY(-50%);color:var(--ink-faint)}
+.search-wrap .form-control{padding-left:2.5rem}
+.item{display:flex;gap:1rem;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:var(--r-md);padding:1rem;box-shadow:var(--shadow-sm);transition:box-shadow .2s var(--ease),transform .2s var(--ease)}
+.item:hover{box-shadow:var(--shadow-md)}
+.item.p-tinggi{--c:var(--tinggi)}.item.p-sedang{--c:var(--sedang)}.item.p-rendah{--c:var(--rendah)}
+.item .ib{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:1.2rem;flex:none}
+.item .ib.k-kebutuhan{background:var(--pb-sky);color:var(--pb-blue-deep)}.item .ib.k-keinginan{background:var(--gold-bg);color:var(--gold-ink)}
+.item-name{font-weight:600;font-size:1rem;word-break:break-word}
+.item-price{font-size:.88rem;color:var(--ink-soft)}.item-price b{color:var(--pb-blue-deep);font-weight:700}
+.item-note{font-size:.82rem;color:var(--ink-soft);background:var(--surface-2);border-radius:10px;padding:.45rem .7rem;margin-top:.55rem;word-break:break-word;white-space:pre-wrap}
+.item.done .item-name{text-decoration:line-through;color:var(--ink-faint)}
+.item.done{background:#FAFCFF}
+.item.postponed{opacity:.88}
+.status-select{border-radius:50px;font-size:.78rem;font-weight:600;padding:.3rem 2rem .3rem .8rem;width:auto;min-width:138px}
+.status-select.st-sudah{background-color:var(--rendah-bg);border-color:#BFE3CF;color:var(--rendah-ink)}
+.status-select.st-ditunda{background-color:var(--gold-bg);border-color:#F1DC8C;color:var(--gold-ink)}
+.empty{text-align:center;padding:2.5rem 1rem}
+.empty img{width:128px;height:128px;object-fit:contain;opacity:.92;margin-bottom:.8rem}
+.empty h3{font-size:1.1rem}
+.fab{position:fixed;right:1.1rem;bottom:calc(1.1rem + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:50%;border:0;background:var(--pb-blue-deep);color:#fff;font-size:1.6rem;box-shadow:0 12px 28px rgba(15,86,247,.4);z-index:1020;display:none;place-items:center}
+@media (max-width:767.98px){.fab{display:grid}.item{flex-direction:column;gap:.7rem}.item .ib{display:none}main.app{padding-bottom:5.5rem}}
+
+/* ---------- form modal ---------- */
+.modal-content{border-radius:var(--r-lg);border:0;box-shadow:var(--shadow-md)}
+.modal-header,.modal-footer{border-color:var(--line)}
+.opt-grid{display:grid;gap:.6rem;grid-template-columns:repeat(2,1fr)}
+.opt-grid.three{grid-template-columns:repeat(3,1fr)}
+.opt{display:flex;flex-direction:column;gap:.15rem;height:100%;border:1.5px solid var(--line-2);border-radius:var(--r-md);padding:.7rem .8rem;cursor:pointer;background:var(--surface);transition:all .2s var(--ease);font-size:.9rem}
+.opt i{font-size:1.15rem;color:var(--ink-soft)}.opt b{font-weight:600}.opt small{color:var(--ink-faint);font-size:.72rem;line-height:1.35}
+.btn-check:checked+.opt{border-color:var(--pb-blue-deep);background:var(--pb-sky)}
+.btn-check:checked+.opt i{color:var(--pb-blue-deep)}
+.btn-check:checked+.opt.o-tinggi{border-color:var(--tinggi);background:var(--tinggi-bg)}.btn-check:checked+.opt.o-tinggi i{color:var(--tinggi)}
+.btn-check:checked+.opt.o-sedang{border-color:var(--sedang);background:var(--sedang-bg)}.btn-check:checked+.opt.o-sedang i{color:var(--sedang)}
+.btn-check:checked+.opt.o-rendah{border-color:var(--rendah);background:var(--rendah-bg)}.btn-check:checked+.opt.o-rendah i{color:var(--rendah)}
+.btn-check:focus-visible+.opt{outline:2px solid var(--pb-blue-deep);outline-offset:2px}
+@media (max-width:480px){.opt-grid.three{grid-template-columns:1fr}.opt-grid.three .opt{flex-direction:row;align-items:center;gap:.6rem}.opt-grid.three .opt small{display:none}}
+.total-preview{background:var(--pb-sky);border-radius:var(--r-md);padding:.65rem .9rem;display:flex;justify-content:space-between;font-size:.9rem}
+.total-preview b{color:var(--pb-blue-deep)}
+
+/* ---------- toast ---------- */
+.pb-toast{border:0;border-radius:var(--r-md);box-shadow:var(--shadow-md);border-left:5px solid var(--pb-blue-deep);font-size:.88rem;background:var(--surface);color:var(--ink)}
+.pb-toast.success{border-left-color:var(--rendah)}.pb-toast.success i.t-ic{color:var(--rendah)}
+.pb-toast.error{border-left-color:var(--danger)}.pb-toast.error i.t-ic{color:var(--danger)}
+.pb-toast.info i.t-ic{color:var(--pb-blue-deep)}
+.pb-toast .toast-body{display:flex;gap:.6rem;align-items:flex-start;line-height:1.5}
+.toast-container{padding-bottom:calc(1rem + env(safe-area-inset-bottom)) !important}
+@media (max-width:767.98px){.toast-container{bottom:4.2rem !important}}
+.app-footer{font-size:.78rem;color:var(--ink-faint)}
+.cdn-warning{background:var(--danger-bg);color:#9c2f2f;border-radius:var(--r-md);padding:.8rem 1rem;font-size:.86rem}
+</style>
+</head>
+<body>
+
+<div class="boot" id="boot" aria-hidden="true"><img src="assets/img/logo-utama.png" alt=""></div>
+
+<!-- ======================= MASUK / DAFTAR ======================= -->
+<main class="auth" id="authView" hidden>
+  <div class="container py-4 py-lg-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <a href="index.html" aria-label="Ke beranda PrioriBuy"><img src="assets/img/logo-horizontal.png" alt="PrioriBuy" width="136" height="34"></a>
+      <div class="d-flex align-items-center gap-3"><a href="index.html" class="small fw-semibold link-pb"><i class="bi bi-arrow-left"></i> Kembali ke pilihan akses</a><div data-theme-slot></div></div>
+    </div>
+    <div class="row g-4 g-lg-5 align-items-center">
+      <div class="col-lg-6 order-2 order-lg-1">
+        <div class="eyebrow"><span class="dot"></span>Smart Spending Planner</div>
+        <h1>Rencanakan belanja dulu, <span class="hero-accent">baru beli.</span></h1>
+        <p class="mb-4" style="max-width:34em">Bedakan kebutuhan dan keinginan, tentukan prioritas, lalu jaga uang sakumu tetap aman. Cocok untuk mahasiswa yang ingin lebih terencana.</p>
+
+        <!-- Demo interaktif: contoh tetap, TIDAK tersimpan dan TIDAK tercampur dengan data pribadi -->
+        <div class="pb-card demo" id="demo">
+          <div class="demo-label" id="demoLabel">Coba logikanya — pilih prioritas</div>
+          <div class="pills" role="group" aria-labelledby="demoLabel">
+            <button type="button" class="pill active" data-level="tinggi" aria-pressed="true">Tinggi</button>
+            <button type="button" class="pill" data-level="sedang" aria-pressed="false">Sedang</button>
+            <button type="button" class="pill" data-level="rendah" aria-pressed="false">Rendah</button>
+          </div>
+          <div class="demo-card" id="demoCard" data-level="tinggi" aria-live="polite">
+            <div class="ib" id="demoIcon"><i class="bi bi-person-badge"></i></div>
+            <div>
+              <span class="chip chip-tinggi" id="demoChip">Prioritas Tinggi</span>
+              <div class="t mt-1" id="demoTitle">Seragam baru sekolah</div>
+              <div class="pr" id="demoPrice">Rp900.000</div>
+              <div class="nt" id="demoNote">Kebutuhan sekolah yang mendesak, jadi layak didahulukan.</div>
+            </div>
+          </div>
+          <p class="hint mt-3 mb-0">Hanya contoh. Prioritas ditentukan oleh kebutuhan dan alasanmu, bukan oleh harga.</p>
+        </div>
+      </div>
+
+      <div class="col-lg-5 offset-lg-1 order-1 order-lg-2">
+        <div class="pb-card p-4">
+          <div class="auth-tabs" role="tablist">
+            <button type="button" class="active" id="tabLogin" role="tab" aria-selected="true">Masuk</button>
+            <button type="button" id="tabRegister" role="tab" aria-selected="false">Daftar</button>
+          </div>
+
+          <form id="loginForm" novalidate>
+            <div class="mb-3">
+              <label class="form-label" for="loginEmail">Email</label>
+              <input class="form-control" id="loginEmail" type="email" autocomplete="username" placeholder="nama@email.com">
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="loginPass">Kata sandi</label>
+              <div class="input-group">
+                <input class="form-control has-eye" id="loginPass" type="password" autocomplete="current-password" placeholder="Kata sandi kamu">
+                <button class="btn btn-eye" type="button" data-eye="loginPass" aria-label="Tampilkan kata sandi"><i class="bi bi-eye"></i></button>
+                <div class="invalid-feedback"></div>
+              </div>
+            </div>
+            <div class="alert-pb over mb-3" id="loginError" role="alert" hidden><i class="bi bi-exclamation-circle-fill"></i><span></span></div>
+            <button class="btn-pb w-100" type="submit" id="loginBtn">Masuk</button>
+          </form>
+
+          <form id="registerForm" novalidate hidden>
+            <div class="mb-3">
+              <label class="form-label" for="regName">Nama</label>
+              <input class="form-control" id="regName" type="text" autocomplete="name" maxlength="40" placeholder="Nama panggilanmu">
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="regEmail">Email</label>
+              <input class="form-control" id="regEmail" type="email" autocomplete="username" placeholder="nama@email.com">
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="regPass">Kata sandi</label>
+              <div class="input-group">
+                <input class="form-control has-eye" id="regPass" type="password" autocomplete="new-password" placeholder="Minimal 6 karakter">
+                <button class="btn btn-eye" type="button" data-eye="regPass" aria-label="Tampilkan kata sandi"><i class="bi bi-eye"></i></button>
+                <div class="invalid-feedback"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="regPass2">Ulangi kata sandi</label>
+              <input class="form-control" id="regPass2" type="password" autocomplete="new-password" placeholder="Ketik ulang kata sandi">
+              <div class="invalid-feedback"></div>
+            </div>
+            <button class="btn-pb w-100" type="submit" id="registerBtn">Buat Akun</button>
+          </form>
+
+          <p class="hint mt-3 mb-0"><i class="bi bi-shield-lock"></i> Akun dan data rencana hanya tersimpan di browser perangkat ini. Data tidak dikirim ke server dan tidak ikut pindah ke perangkat lain. Gunakan fitur Ekspor untuk cadangan.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ======================= APLIKASI ======================= -->
+<div id="appView" hidden>
+  <nav class="pb-nav">
+    <div class="container d-flex align-items-center justify-content-between gap-2">
+      <a href="app.html" aria-label="PrioriBuy Planner"><img src="assets/img/logo-horizontal.png" alt="PrioriBuy" width="136" height="34"></a>
+      <div class="d-flex align-items-center gap-2">
+        <div data-theme-slot></div>
+        <span class="badge-offline" id="offlineBadge" hidden><i class="bi bi-wifi-off"></i> Offline</span>
+        <div class="dropdown">
+          <button class="user-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="userBtn">
+            <span class="avatar" id="userAvatar">U</span><span class="d-none d-sm-inline" id="userName">Pengguna</span><i class="bi bi-chevron-down small"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="konsultasi.html"><i class="bi bi-chat-dots"></i>Konsultasi PrioriBuy</a></li>
+            <li><a class="dropdown-item" href="#dataSection"><i class="bi bi-hdd"></i>Pengelolaan data</a></li>
+            <li><button class="dropdown-item" type="button" data-action="export"><i class="bi bi-download"></i>Ekspor data (JSON)</button></li>
+            <li><button class="dropdown-item" type="button" data-action="import"><i class="bi bi-upload"></i>Impor data (JSON)</button></li>
+            <li><button class="dropdown-item" type="button" data-action="install" id="installItem"><i class="bi bi-phone"></i>Pasang aplikasi (Android)</button></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="index.html"><i class="bi bi-house"></i>Kembali ke pilihan akses</a></li>
+            <li><button class="dropdown-item text-danger" type="button" data-action="logout"><i class="bi bi-box-arrow-right"></i>Keluar</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="app container py-4 py-lg-5">
+    <div class="mb-4">
+      <h1 class="h3 mb-1" id="greeting">Halo!</h1>
+      <p class="mb-0">Catat barang yang ingin kamu beli, tentukan prioritasnya, lalu lihat apakah rencanamu masih muat di anggaran.</p>
+    </div>
+
+    <div class="cdn-warning mb-4" id="cdnWarning" hidden>Sebagian komponen tampilan belum termuat. Sambungkan internet sekali, lalu muat ulang halaman ini. Setelah itu aplikasi bisa dipakai offline.</div>
+
+    <!-- Akses konsultasi yang terhubung ke layanan Supabase yang sudah tersedia -->
+    <section class="pb-card mb-4" aria-labelledby="consultEntryTitle" style="border:1px solid color-mix(in srgb,var(--pb-blue) 30%,var(--line));background:linear-gradient(115deg,var(--surface),color-mix(in srgb,var(--pb-sky) 70%,var(--surface)));">
+      <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
+        <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width:54px;height:54px;border-radius:16px;background:var(--pb-sky);color:var(--pb-blue-deep);font-size:1.55rem"><i class="bi bi-chat-heart"></i></div>
+        <div class="flex-grow-1">
+          <div class="small fw-bold text-uppercase mb-1" style="letter-spacing:.08em;color:var(--pb-blue-deep)">Butuh bantuan menentukan prioritas?</div>
+          <h2 class="h5 mb-1" id="consultEntryTitle">Konsultasi PrioriBuy</h2>
+          <p class="mb-0 small" style="color:var(--ink-soft)">Diskusikan kebutuhan, keinginan, dan rencana belanjamu dengan konsultan. Layanan konsultasi tersedia untuk pengguna Premium.</p>
+        </div>
+        <a class="btn-pb flex-shrink-0 text-decoration-none text-center" href="konsultasi.html" style="border-radius:var(--r-md);padding:.7rem 1rem"><i class="bi bi-chat-dots me-1"></i>Buka Konsultasi <i class="bi bi-arrow-up-right ms-1"></i></a>
+      </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section aria-labelledby="dashTitle" class="mb-4">
+      <h2 class="sec-title" id="dashTitle">Ringkasan</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-7"><div class="pb-card h-100" id="planCard"></div></div>
+        <div class="col-lg-5">
+          <div class="pb-card h-100" id="budgetCard">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 class="mb-0">Batas Anggaran</h3>
+              <button class="btn btn-link btn-sm p-0 text-decoration-none link-pb" type="button" id="budgetClear" hidden>Hapus batas</button>
+            </div>
+            <form id="budgetForm" novalidate>
+              <div class="input-group mb-1">
+                <span class="input-group-text">Rp</span>
+                <input class="form-control" id="budgetInput" type="text" inputmode="numeric" autocomplete="off" placeholder="mis. 1.500.000" aria-label="Batas anggaran dalam Rupiah">
+                <button class="btn-pb ms-2" type="submit" style="border-radius:var(--r-md)">Simpan</button>
+                <div class="invalid-feedback" id="budgetErr"></div>
+              </div>
+            </form>
+            <div id="budgetInfo" class="mt-3"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3" id="tiles"></div>
+    </section>
+
+    <!-- Daftar -->
+    <section aria-labelledby="listTitle" class="mb-5">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div>
+          <h2 class="h4 mb-0" id="listTitle">Daftar Rencana Pembelian</h2>
+          <div class="hint" id="listMeta">&nbsp;</div>
+        </div>
+        <button class="btn-pb d-none d-md-inline-flex" type="button" data-action="add"><i class="bi bi-plus-lg"></i>Tambah Barang</button>
+      </div>
+
+      <div class="pb-card mb-3 toolbar">
+        <div class="row g-2">
+          <div class="col-12 col-lg-4">
+            <div class="search-wrap"><i class="bi bi-search"></i><input class="form-control" id="searchInput" type="search" placeholder="Cari nama barang…" aria-label="Cari barang berdasarkan nama" autocomplete="off"></div>
+          </div>
+          <div class="col-6 col-lg-2">
+            <select class="form-select" id="sortSelect" aria-label="Urutkan daftar">
+              <option value="prio-high">Prioritas: tinggi → rendah</option>
+              <option value="prio-low">Prioritas: rendah → tinggi</option>
+              <option value="name-asc">Nama: A → Z</option>
+              <option value="name-desc">Nama: Z → A</option>
+              <option value="price-desc">Harga: tertinggi</option>
+              <option value="price-asc">Harga: terendah</option>
+              <option value="new">Terbaru ditambahkan</option>
+            </select>
+          </div>
+          <div class="col-6 col-lg-2">
+            <select class="form-select" id="fCategory" aria-label="Filter kategori">
+              <option value="all">Semua kategori</option><option value="kebutuhan">Kebutuhan</option><option value="keinginan">Keinginan</option>
+            </select>
+          </div>
+          <div class="col-6 col-lg-2">
+            <select class="form-select" id="fPriority" aria-label="Filter prioritas">
+              <option value="all">Semua prioritas</option><option value="tinggi">Tinggi</option><option value="sedang">Sedang</option><option value="rendah">Rendah</option>
+            </select>
+          </div>
+          <div class="col-6 col-lg-2">
+            <select class="form-select" id="fStatus" aria-label="Filter status">
+              <option value="all">Semua status</option><option value="belum">Belum dibeli</option><option value="sudah">Sudah dibeli</option><option value="ditunda">Ditunda</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="listBox" class="d-grid gap-3" aria-live="polite"></div>
+    </section>
+
+    <!-- Pengelolaan data -->
+    <section id="dataSection" class="pb-card mb-4" aria-labelledby="dataTitle">
+      <h2 class="h5" id="dataTitle">Pengelolaan Data</h2>
+      <p class="mb-3 small">Perubahan tersimpan otomatis di browser ini. Ekspor secara berkala sebagai cadangan, atau untuk memindahkan data ke perangkat lain.</p>
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn-pb-outline btn-sm-pb" type="button" data-action="export"><i class="bi bi-download"></i>Ekspor JSON</button>
+        <button class="btn-pb-outline btn-sm-pb" type="button" data-action="import"><i class="bi bi-upload"></i>Impor JSON</button>
+        <button class="btn-pb-outline btn-sm-pb" type="button" data-action="clear" style="color:var(--danger)"><i class="bi bi-trash3"></i>Hapus seluruh daftar</button>
+      </div>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+    </section>
+
+    <p class="app-footer text-center mb-0">© 2026 PrioriBuy. Be Smart Buy. · Data hanya tersimpan di browser ini (localStorage) dan tidak disinkronkan ke server atau perangkat lain. Anggaran hanyalah alat perencanaan, bukan transaksi keuangan.</p>
+  </main>
+
+  <button class="fab" type="button" data-action="add" aria-label="Tambah barang"><i class="bi bi-plus-lg"></i></button>
+</div>
+
+<!-- ======================= MODAL FORM BARANG ======================= -->
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <form id="itemForm" novalidate>
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="itemModalTitle">Tambah Rencana Pembelian</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label" for="fName">Nama barang</label>
+            <input class="form-control" id="fName" type="text" maxlength="80" autocomplete="off" placeholder="mis. Buku catatan kuliah">
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-7">
+              <label class="form-label" for="fPrice">Harga estimasi</label>
+              <div class="input-group"><span class="input-group-text">Rp</span><input class="form-control" id="fPrice" type="text" inputmode="numeric" autocomplete="off" placeholder="0"><div class="invalid-feedback"></div></div>
+            </div>
+            <div class="col-5">
+              <label class="form-label" for="fQty">Jumlah</label>
+              <input class="form-control" id="fQty" type="text" inputmode="numeric" autocomplete="off" value="1">
+              <div class="invalid-feedback"></div>
+            </div>
+          </div>
+          <div class="total-preview mb-3"><span>Total biaya (harga × jumlah)</span><b id="totalPreview">Rp0</b></div>
+
+          <div class="mb-3">
+            <div class="form-label" id="lblCat">Kategori</div>
+            <div class="opt-grid" role="radiogroup" aria-labelledby="lblCat">
+              <div><input class="btn-check" type="radio" name="category" id="cat-kebutuhan" value="kebutuhan"><label class="opt" for="cat-kebutuhan"><i class="bi bi-bag-check"></i><b>Kebutuhan</b><small>Diperlukan untuk kuliah atau sehari-hari, seperti buku dan alat tulis.</small></label></div>
+              <div><input class="btn-check" type="radio" name="category" id="cat-keinginan" value="keinginan"><label class="opt" for="cat-keinginan"><i class="bi bi-stars"></i><b>Keinginan</b><small>Ingin dimiliki tetapi tidak mendesak, seperti aksesori atau barang hobi.</small></label></div>
+            </div>
+            <div class="invalid-feedback" id="errCategory"></div>
+          </div>
+
+          <div class="mb-3">
+            <div class="form-label" id="lblPrio">Prioritas</div>
+            <div class="opt-grid three" role="radiogroup" aria-labelledby="lblPrio">
+              <div><input class="btn-check" type="radio" name="priority" id="pr-tinggi" value="tinggi"><label class="opt o-tinggi" for="pr-tinggi"><i class="bi bi-exclamation-circle"></i><b>Tinggi</b><small>Penting atau mendesak, didahulukan.</small></label></div>
+              <div><input class="btn-check" type="radio" name="priority" id="pr-sedang" value="sedang"><label class="opt o-sedang" for="pr-sedang"><i class="bi bi-dash-circle"></i><b>Sedang</b><small>Diperlukan, tapi masih bisa ditunda.</small></label></div>
+              <div><input class="btn-check" type="radio" name="priority" id="pr-rendah" value="rendah"><label class="opt o-rendah" for="pr-rendah"><i class="bi bi-arrow-down-circle"></i><b>Rendah</b><small>Tidak mendesak, bisa dibeli kemudian.</small></label></div>
+            </div>
+            <div class="invalid-feedback" id="errPriority"></div>
+            <div class="form-text mt-2">Harga bukan satu-satunya dasar prioritas. Pikirkan seberapa mendesak dan seberapa besar manfaatnya.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="fStatusForm">Status</label>
+            <select class="form-select" id="fStatusForm"><option value="belum">Belum dibeli</option><option value="sudah">Sudah dibeli</option><option value="ditunda">Ditunda</option></select>
+          </div>
+
+          <div class="mb-1">
+            <label class="form-label" for="fNote">Alasan pembelian <span class="fw-normal text-secondary">(opsional)</span></label>
+            <textarea class="form-control" id="fNote" rows="3" maxlength="300" placeholder="mis. Persediaan alat tulis hampir habis."></textarea>
+            <div class="invalid-feedback"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-pb-outline" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn-pb" id="itemSaveBtn">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= MODAL KONFIRMASI / INFO ======================= -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header"><h2 class="modal-title h5" id="confirmTitle">Konfirmasi</h2></div>
+      <div class="modal-body" id="confirmBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn-pb-outline" id="confirmCancel">Batal</button>
+        <button type="button" class="btn-pb" id="confirmOk">Ya</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3" id="toastBox" style="z-index:2100"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   Util dasar
+   ============================================================ */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtRp = n => 'Rp' + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const fmtDate = ts => new Date(ts).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'});
+const rid = () => 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+const MAX_PRICE = 10000000000, MAX_QTY = 9999, MAX_ITEMS = 2000;
+const CATS   = { kebutuhan:{label:'Kebutuhan', icon:'bi-bag-check'}, keinginan:{label:'Keinginan', icon:'bi-stars'} };
+const PRIOS  = { tinggi:{label:'Tinggi', rank:0}, sedang:{label:'Sedang', rank:1}, rendah:{label:'Rendah', rank:2} };
+const STATUS = { belum:{label:'Belum dibeli'}, sudah:{label:'Sudah dibeli'}, ditunda:{label:'Ditunda'} };
+const SORTS  = ['prio-high','prio-low','name-asc','name-desc','price-desc','price-asc','new'];
+const DEFAULT_PREFS = { sort:'prio-high', category:'all', priority:'all', status:'all' };
+
+/* ============================================================
+   Notifikasi (toast buatan sendiri, tidak bergantung CDN)
+   ============================================================ */
+function toast(msg, type='info', ms){
+  const box = $('#toastBox');
+  const icon = type==='success' ? 'bi-check-circle-fill' : type==='error' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill';
+  const el = document.createElement('div');
+  el.className = 'toast show pb-toast ' + type;
+  el.setAttribute('role', type==='error' ? 'alert' : 'status');
+  el.innerHTML = '<div class="d-flex"><div class="toast-body"><i class="bi '+icon+' t-ic"></i><span></span></div>' +
+    '<button type="button" class="btn-close me-2 m-auto" aria-label="Tutup"></button></div>';
+  $('span', el).textContent = msg;
+  const kill = () => { el.classList.remove('show'); setTimeout(() => el.remove(), 200); };
+  $('.btn-close', el).addEventListener('click', kill);
+  box.appendChild(el);
+  while (box.children.length > 3) box.firstElementChild.remove();
+  setTimeout(kill, ms || (type==='error' ? 7000 : 3500));
+}
+
+/* ============================================================
+   Penyimpanan (localStorage)
+   ============================================================ */
+const K = { users:'pb_users', session:'pb_session', data: id => 'pb_data_' + id };
+function readJSON(key){
+  let raw;
+  try { raw = localStorage.getItem(key); } catch(e){ return {ok:false, val:null, err:'access'}; }
+  if (raw === null) return {ok:true, val:null};
+  try { return {ok:true, val:JSON.parse(raw)}; } catch(e){ return {ok:false, val:null, err:'corrupt'}; }
+}
+function writeJSON(key, val){
+  try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch(e){ return false; }
+}
+function getUsers(){ const v = readJSON(K.users).val; return Array.isArray(v) ? v : []; }
+
+/* ============================================================
+   Hash kata sandi (PBKDF2; cadangan SHA-256 untuk konteks tidak aman)
+   Catatan: ini hanya pemisah akun lokal di browser, bukan keamanan server.
+   ============================================================ */
+const sha256 = (function(){
+  const K256 = [], H0 = []; let n = 2, c = 0;
+  const frac = x => x - Math.floor(x);
+  while (c < 64){
+    let p = true; for (let d = 2; d*d <= n; d++) if (n % d === 0){ p = false; break; }
+    if (p){ if (c < 8) H0.push((frac(Math.sqrt(n)) * 4294967296) | 0); K256.push((frac(Math.cbrt(n)) * 4294967296) | 0); c++; }
+    n++;
+  }
+  const ror = (x, k) => (x >>> k) | (x << (32 - k));
+  return function(str){
+    const bytes = new TextEncoder().encode(str), l = bytes.length, len = ((l + 9 + 63) >> 6) << 6;
+    const buf = new Uint8Array(len); buf.set(bytes); buf[l] = 0x80;
+    const dv = new DataView(buf.buffer);
+    dv.setUint32(len - 8, Math.floor(l * 8 / 4294967296)); dv.setUint32(len - 4, (l * 8) >>> 0);
+    const h = H0.slice(), w = new Array(64);
+    for (let off = 0; off < len; off += 64){
+      for (let i = 0; i < 16; i++) w[i] = dv.getUint32(off + i*4);
+      for (let i = 16; i < 64; i++){
+        const s0 = ror(w[i-15],7) ^ ror(w[i-15],18) ^ (w[i-15] >>> 3);
+        const s1 = ror(w[i-2],17) ^ ror(w[i-2],19) ^ (w[i-2] >>> 10);
+        w[i] = (w[i-16] + s0 + w[i-7] + s1) | 0;
+      }
+      let a=h[0], b=h[1], cc=h[2], d=h[3], e=h[4], f=h[5], g=h[6], hh=h[7];
+      for (let i = 0; i < 64; i++){
+        const S1 = ror(e,6) ^ ror(e,11) ^ ror(e,25), ch = (e & f) ^ (~e & g);
+        const t1 = (hh + S1 + ch + K256[i] + w[i]) | 0;
+        const S0 = ror(a,2) ^ ror(a,13) ^ ror(a,22), maj = (a & b) ^ (a & cc) ^ (b & cc);
+        const t2 = (S0 + maj) | 0;
+        hh = g; g = f; f = e; e = (d + t1) | 0; d = cc; cc = b; b = a; a = (t1 + t2) | 0;
+      }
+      h[0]=(h[0]+a)|0; h[1]=(h[1]+b)|0; h[2]=(h[2]+cc)|0; h[3]=(h[3]+d)|0;
+      h[4]=(h[4]+e)|0; h[5]=(h[5]+f)|0; h[6]=(h[6]+g)|0; h[7]=(h[7]+hh)|0;
+    }
+    return h.map(x => (x >>> 0).toString(16).padStart(8, '0')).join('');
+  };
+})();
+const toHex = u8 => Array.from(u8, b => b.toString(16).padStart(2, '0')).join('');
+const fromHex = s => new Uint8Array((s.match(/../g) || []).map(h => parseInt(h, 16)));
+function randomHex(n){
+  const a = new Uint8Array(n);
+  if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(a); else for (let i = 0; i < n; i++) a[i] = Math.floor(Math.random() * 256);
+  return toHex(a);
+}
+async function hashPw(pw, saltHex){
+  if (window.crypto && crypto.subtle){
+    const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']);
+    const bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt:fromHex(saltHex), iterations:100000, hash:'SHA-256'}, key, 256);
+    return {algo:'pbkdf2', hash:toHex(new Uint8Array(bits))};
+  }
+  let h = saltHex + ':' + pw; for (let i = 0; i < 3000; i++) h = sha256(h + saltHex);
+  return {algo:'sha256', hash:h};
+}
+async function verifyPw(user, pw){
+  if (user.algo === 'pbkdf2'){
+    if (!(window.crypto && crypto.subtle)) return false;
+    return (await hashPw(pw, user.salt)).hash === user.hash;
+  }
+  let h = user.salt + ':' + pw; for (let i = 0; i < 3000; i++) h = sha256(h + user.salt);
+  return h === user.hash;
+}
+
+/* ============================================================
+   Validasi & model data
+   ============================================================ */
+function parseMoney(raw, label){
+  const s = String(raw == null ? '' : raw).trim().replace(/^Rp\.?\s*/i, '').replace(/\s+/g, '');
+  if (s === '') return {err: label + ' wajib diisi.'};
+  if (/^-/.test(s)) return {err: label + ' tidak boleh negatif.'};
+  if (/^\d+$/.test(s) || /^\d{1,3}(\.\d{3})+$/.test(s)){
+    const n = Number(s.replace(/\./g, ''));
+    if (n > MAX_PRICE) return {err: label + ' terlalu besar (maksimal Rp10.000.000.000).'};
+    return {val:n};
+  }
+  return {err: label + ' harus berupa angka bulat, misalnya 900000 atau 900.000.'};
+}
+function parseQty(raw){
+  const s = String(raw == null ? '' : raw).trim();
+  if (s === '') return {err:'Jumlah wajib diisi.'};
+  if (/^-/.test(s)) return {err:'Jumlah tidak boleh negatif.'};
+  if (!/^\d+$/.test(s)) return {err:'Jumlah harus berupa bilangan bulat, misalnya 1.'};
+  const n = Number(s);
+  if (n < 1) return {err:'Jumlah minimal 1.'};
+  if (n > MAX_QTY) return {err:'Jumlah maksimal 9.999.'};
+  return {val:n};
+}
+function validateItem(r){
+  if (!r || typeof r !== 'object' || Array.isArray(r)) return {errors:['bukan data barang yang valid']};
+  const e = [];
+  const name = typeof r.name === 'string' ? r.name.trim() : '';
+  if (!name) e.push('nama kosong'); else if (name.length > 80) e.push('nama lebih dari 80 karakter');
+  if (typeof r.price !== 'number' || !Number.isInteger(r.price) || r.price < 0 || r.price > MAX_PRICE) e.push('harga harus bilangan bulat 0 atau lebih');
+  if (!Number.isInteger(r.qty) || r.qty < 1 || r.qty > MAX_QTY) e.push('jumlah harus bilangan bulat 1 atau lebih');
+  if (typeof r.category !== 'string' || !has(CATS, r.category)) e.push('kategori tidak valid');
+  if (typeof r.priority !== 'string' || !has(PRIOS, r.priority)) e.push('prioritas tidak valid');
+  if (r.status !== undefined && (typeof r.status !== 'string' || !has(STATUS, r.status))) e.push('status tidak valid');
+  if (r.note != null && (typeof r.note !== 'string' || r.note.length > 300)) e.push('catatan tidak valid (maksimal 300 karakter)');
+  if (e.length) return {errors:e};
+  const num = v => (typeof v === 'number' && isFinite(v) && v > 0) ? v : undefined;
+  const item = {
+    id: (typeof r.id === 'string' && /^[A-Za-z0-9_-]{1,40}$/.test(r.id)) ? r.id : rid(),
+    name, price:r.price, qty:r.qty, category:r.category, priority:r.priority,
+    status: r.status || 'belum', note: (r.note || '').trim(),
+    createdAt: num(r.createdAt) || Date.now(), updatedAt: num(r.updatedAt) || Date.now()
+  };
+  const pa = num(r.purchasedAt); if (item.status === 'sudah' && pa) item.purchasedAt = pa;
+  return {item};
+}
+function validateImport(data){
+  const errors = []; let list, budget;
+  if (Array.isArray(data)) list = data;
+  else if (data && typeof data === 'object' && Array.isArray(data.items)){
+    list = data.items;
+    if (data.budget !== undefined){
+      if (data.budget === null) budget = null;
+      else if (typeof data.budget === 'number' && Number.isInteger(data.budget) && data.budget >= 0 && data.budget <= MAX_PRICE) budget = data.budget;
+      else errors.push('Batas anggaran di dalam file tidak valid.');
+    }
+  } else return {errors:['Format file tidak dikenali. Gunakan file JSON hasil ekspor PrioriBuy.']};
+  if (list.length > MAX_ITEMS) errors.push('Jumlah barang melebihi batas ' + MAX_ITEMS + '.');
+  const items = [], seen = new Set();
+  list.slice(0, MAX_ITEMS).forEach((r, i) => {
+    const v = validateItem(r);
+    if (v.errors){ errors.push('Barang #' + (i + 1) + ': ' + v.errors.join(', ') + '.'); return; }
+    while (seen.has(v.item.id)) v.item.id = rid();
+    seen.add(v.item.id); items.push(v.item);
+  });
+  return {errors, items, budget};
+}
+function sanitizeData(raw){
+  const out = {items:[], budget:null, prefs:Object.assign({}, DEFAULT_PREFS), dropped:0};
+  if (!raw || typeof raw !== 'object') return out;
+  if (Array.isArray(raw.items)){
+    const seen = new Set();
+    raw.items.slice(0, MAX_ITEMS).forEach(r => {
+      const v = validateItem(r);
+      if (v.errors){ out.dropped++; return; }
+      while (seen.has(v.item.id)) v.item.id = rid();
+      seen.add(v.item.id); out.items.push(v.item);
+    });
+  }
+  if (typeof raw.budget === 'number' && Number.isInteger(raw.budget) && raw.budget >= 0 && raw.budget <= MAX_PRICE) out.budget = raw.budget;
+  const p = raw.prefs || {};
+  if (SORTS.includes(p.sort)) out.prefs.sort = p.sort;
+  if (p.category === 'all' || has(CATS, p.category))   out.prefs.category = p.category;
+  if (p.priority === 'all' || has(PRIOS, p.priority))  out.prefs.priority = p.priority;
+  if (p.status === 'all' || has(STATUS, p.status))     out.prefs.status = p.status;
+  return out;
+}
+
+/* ============================================================
+   State
+   ============================================================ */
+let user = null, S = null, editingId = null, searchQ = '', lastAddedId = null;
+
+function persist(){
+  if (!user || !S) return true;
+  const ok = writeJSON(K.data(user.id), {v:1, items:S.items, budget:S.budget, prefs:S.prefs, savedAt:Date.now()});
+  if (!ok) toast('Data gagal disimpan. Penyimpanan browser mungkin penuh atau diblokir (mis. mode privat). Ekspor data agar tidak hilang.', 'error', 9000);
+  return ok;
+}
+const lineTotal = i => i.price * i.qty;
+function computeStats(){
+  const s = {all:S.items.length, keb:0, ing:0, belum:{n:0,total:0,keb:0,ing:0,tinggi:0}, sudah:{n:0,total:0}, ditunda:{n:0,total:0}};
+  S.items.forEach(i => {
+    const t = lineTotal(i);
+    if (i.category === 'kebutuhan') s.keb++; else s.ing++;
+    if (i.status === 'belum'){
+      s.belum.n++; s.belum.total += t;
+      if (i.category === 'kebutuhan') s.belum.keb += t; else s.belum.ing += t;
+      if (i.priority === 'tinggi') s.belum.tinggi++;
+    } else if (i.status === 'sudah'){ s.sudah.n++; s.sudah.total += t; }
+    else { s.ditunda.n++; s.ditunda.total += t; }
+  });
+  return s;
+}
+
+/* ============================================================
+   Tampilan: dashboard, anggaran, daftar
+   ============================================================ */
+function renderDashboard(){
+  const s = computeStats(), b = s.belum;
+  const kebPct = b.total ? Math.round(b.keb / b.total * 100) : 0;
+  $('#planCard').innerHTML =
+    '<h3 class="mb-2">Rencana Belanja <span class="hint fw-normal">(belum dibeli)</span></h3>' +
+    '<div class="big-total" id="dTotal">' + fmtRp(b.total) + '</div>' +
+    '<div class="hint mb-3">Total estimasi dari ' + b.n + ' barang yang belum dibeli. Barang yang sudah dibeli dan ditunda dihitung terpisah.</div>' +
+    '<div class="split mb-3" aria-hidden="true">' + (b.total ? '<div class="s-keb" style="width:' + kebPct + '%"></div><div class="s-ing" style="width:' + (100 - kebPct) + '%"></div>' : '') + '</div>' +
+    '<div class="row g-2 text-center text-sm-start">' +
+      '<div class="col-4"><div class="legend"><span><i style="background:var(--pb-blue)"></i>Kebutuhan</span></div><div class="fw-semibold" id="dKebRp">' + fmtRp(b.keb) + '</div></div>' +
+      '<div class="col-4"><div class="legend"><span><i style="background:var(--pb-gold)"></i>Keinginan</span></div><div class="fw-semibold" id="dIngRp">' + fmtRp(b.ing) + '</div></div>' +
+      '<div class="col-4"><div class="legend"><span><i style="background:var(--tinggi)"></i>Prioritas tinggi</span></div><div class="fw-semibold" id="dTinggi">' + b.tinggi + ' barang</div></div>' +
+    '</div>';
+  const tile = (id, icon, label, val, sub) => '<div class="col-6 col-md-4 col-xl-2"><div class="tile"><div class="l"><i class="bi ' + icon + '"></i>' + label + '</div><div class="v" id="' + id + '">' + val + '</div><div class="s">' + sub + '</div></div></div>';
+  $('#tiles').innerHTML =
+    tile('tAll','bi-collection','Seluruh rencana', s.all, 'barang di daftar') +
+    tile('tKeb','bi-bag-check','Kebutuhan', s.keb, 'barang') +
+    tile('tIng','bi-stars','Keinginan', s.ing, 'barang') +
+    tile('tBelum','bi-hourglass-split','Belum dibeli', s.belum.n, 'barang') +
+    tile('tSudah','bi-check-circle','Sudah dibeli', s.sudah.n, fmtRp(s.sudah.total)) +
+    tile('tTunda','bi-pause-circle','Ditunda', s.ditunda.n, fmtRp(s.ditunda.total));
+}
+
+function renderBudget(){
+  const s = computeStats(), info = $('#budgetInfo'), b = S.budget;
+  $('#budgetClear').hidden = (b == null);
+  const rows = '<div class="kv"><span>Rencana belum dibeli</span><b>' + fmtRp(s.belum.total) + '</b></div>' +
+               '<div class="kv"><span>Sudah dibeli</span><b>' + fmtRp(s.sudah.total) + '</b></div>';
+  if (b == null){
+    info.innerHTML = '<p class="small mb-2">Tentukan batas belanjamu, misalnya uang saku bulan ini, untuk melihat sisa anggaran.</p>' + rows;
+    return;
+  }
+  const used = s.belum.total + s.sudah.total, sisa = b - used, over = used > b;
+  const pct = b > 0 ? used / b * 100 : (used > 0 ? 100 : 0);
+  const warn = !over && b > 0 && pct >= 85;
+  const base = over ? used : (b || 1);
+  const wSpent = Math.min(100, s.sudah.total / base * 100), wPlan = Math.min(100 - wSpent, s.belum.total / base * 100);
+  let alert;
+  if (over) alert = '<div class="alert-pb over" id="budgetAlert" role="alert"><i class="bi bi-exclamation-triangle-fill"></i><span>Rencanamu melebihi anggaran sebesar <b>' + fmtRp(used - b) + '</b>. Pertimbangkan menunda barang berprioritas rendah atau kategori keinginan.</span></div>';
+  else if (warn) alert = '<div class="alert-pb warn" id="budgetAlert"><i class="bi bi-exclamation-circle-fill"></i><span>Anggaran hampir habis (' + Math.round(pct) + '% terpakai). Cek lagi sebelum menambah rencana baru.</span></div>';
+  else alert = '<div class="alert-pb ok" id="budgetAlert"><i class="bi bi-check-circle-fill"></i><span>Rencanamu masih muat di dalam anggaran.</span></div>';
+  info.innerHTML =
+    '<div class="meter ' + (over ? 'over' : warn ? 'warn' : '') + ' mb-3" role="progressbar" aria-label="Pemakaian anggaran" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + Math.min(100, Math.round(pct)) + '">' +
+      '<div class="m-spent" style="width:' + wSpent + '%"></div><div class="m-plan" style="width:' + wPlan + '%"></div></div>' +
+    '<div class="kv"><span>Batas anggaran</span><b id="bLimit">' + fmtRp(b) + '</b></div>' + rows +
+    '<div class="kv border-top mt-1 pt-2"><span class="fw-semibold" style="color:var(--ink)">' + (over ? 'Melebihi anggaran' : 'Sisa anggaran') + '</span><b id="bRemain" style="color:' + (over ? 'var(--danger)' : 'var(--rendah-ink)') + '">' + (over ? '-' : '') + fmtRp(Math.abs(sisa)) + '</b></div>' +
+    (s.ditunda.n ? '<div class="hint mt-1">Barang yang ditunda tidak ikut dihitung.</div>' : '') + alert;
+}
+
+function getView(){
+  const q = searchQ.trim().toLowerCase(), p = S.prefs;
+  const a = S.items.filter(i =>
+    (!q || i.name.toLowerCase().includes(q)) &&
+    (p.category === 'all' || i.category === p.category) &&
+    (p.priority === 'all' || i.priority === p.priority) &&
+    (p.status === 'all' || i.status === p.status));
+  const nameCmp = (x, y) => x.name.localeCompare(y.name, 'id', {sensitivity:'base'});
+  const cmp = {
+    'prio-high': (x, y) => PRIOS[x.priority].rank - PRIOS[y.priority].rank || nameCmp(x, y),
+    'prio-low':  (x, y) => PRIOS[y.priority].rank - PRIOS[x.priority].rank || nameCmp(x, y),
+    'name-asc':  nameCmp,
+    'name-desc': (x, y) => nameCmp(y, x),
+    'price-desc':(x, y) => lineTotal(y) - lineTotal(x) || nameCmp(x, y),
+    'price-asc': (x, y) => lineTotal(x) - lineTotal(y) || nameCmp(x, y),
+    'new':       (x, y) => y.createdAt - x.createdAt
+  }[p.sort] || nameCmp;
+  return a.sort(cmp);
+}
+function itemHTML(i){
+  const sel = Object.keys(STATUS).map(k => '<option value="' + k + '"' + (k === i.status ? ' selected' : '') + '>' + STATUS[k].label + '</option>').join('');
+  const nm = esc(i.name);
+  return '<article class="item p-' + i.priority + (i.status === 'sudah' ? ' done' : '') + (i.status === 'ditunda' ? ' postponed' : '') + (i.id === lastAddedId ? ' fade-in' : '') + '" data-id="' + i.id + '">' +
+    '<div class="ib k-' + i.category + '"><i class="bi ' + CATS[i.category].icon + '"></i></div>' +
+    '<div class="flex-grow-1" style="min-width:0">' +
+      '<div class="item-name mb-1">' + nm + '</div>' +
+      '<div class="d-flex flex-wrap gap-2 mb-2"><span class="chip chip-' + i.priority + '">Prioritas ' + PRIOS[i.priority].label + '</span><span class="chip chip-' + i.category + '">' + CATS[i.category].label + '</span></div>' +
+      '<div class="item-price">' + fmtRp(i.price) + ' × ' + i.qty + ' = <b>' + fmtRp(lineTotal(i)) + '</b></div>' +
+      (i.note ? '<div class="item-note"><i class="bi bi-chat-left-text me-1"></i>' + esc(i.note) + '</div>' : '') +
+      (i.status === 'sudah' && i.purchasedAt ? '<div class="hint mt-1">Dibeli ' + fmtDate(i.purchasedAt) + '</div>' : '') +
+    '</div>' +
+    '<div class="d-flex flex-md-column align-items-center align-items-md-end justify-content-between gap-2">' +
+      '<select class="form-select status-select st-' + i.status + '" data-id="' + i.id + '" aria-label="Status ' + nm + '">' + sel + '</select>' +
+      '<div class="d-flex gap-2">' +
+        '<button type="button" class="btn-icon" data-action="edit" data-id="' + i.id + '" aria-label="Edit ' + nm + '"><i class="bi bi-pencil"></i></button>' +
+        '<button type="button" class="btn-icon danger" data-action="delete" data-id="' + i.id + '" aria-label="Hapus ' + nm + '"><i class="bi bi-trash3"></i></button>' +
+      '</div>' +
+    '</div></article>';
+}
+function renderList(){
+  const box = $('#listBox'), view = getView(), meta = $('#listMeta');
+  if (!S.items.length){
+    meta.textContent = 'Belum ada barang · Perubahan tersimpan otomatis';
+    box.innerHTML = '<div class="pb-card empty" id="emptyState"><img src="assets/img/logo-utama.png" alt="" width="128" height="128"><h3>Belum ada rencana pembelian</h3>' +
+      '<p class="mb-3">Mulai dengan menambahkan satu barang yang ingin kamu beli. Tentukan kategorinya, prioritasnya, dan tulis alasannya.</p>' +
+      '<button type="button" class="btn-pb" data-action="add"><i class="bi bi-plus-lg"></i>Tambah barang pertama</button></div>';
+    return;
+  }
+  const sum = view.reduce((t, i) => t + lineTotal(i), 0);
+  meta.textContent = 'Menampilkan ' + view.length + ' dari ' + S.items.length + ' barang · Total estimasi yang ditampilkan ' + fmtRp(sum) + ' · Tersimpan otomatis';
+  if (!view.length){
+    box.innerHTML = '<div class="pb-card empty" id="noResult"><i class="bi bi-search" style="font-size:2rem;color:var(--ink-faint)"></i><h3 class="mt-2">Tidak ada barang yang cocok</h3>' +
+      '<p class="mb-3">Coba ubah kata pencarian atau filter yang sedang aktif.</p>' +
+      '<button type="button" class="btn-pb-outline btn-sm-pb" data-action="reset-filters">Reset pencarian & filter</button></div>';
+    return;
+  }
+  box.innerHTML = view.map(itemHTML).join('');
+  lastAddedId = null;
+}
+function renderAll(){ renderDashboard(); renderBudget(); renderList(); }
+function syncControls(){
+  $('#sortSelect').value = S.prefs.sort; $('#fCategory').value = S.prefs.category;
+  $('#fPriority').value = S.prefs.priority; $('#fStatus').value = S.prefs.status;
+  $('#searchInput').value = searchQ;
+  $('#budgetInput').value = S.budget == null ? '' : String(S.budget).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  $('#budgetInput').classList.remove('is-invalid');
+}
+
+/* ============================================================
+   Konfirmasi / info (modal)
+   ============================================================ */
+let dialogChain = Promise.resolve();
+/* Dialog diantrekan: dialog berikutnya baru tampil setelah dialog sebelumnya benar-benar tertutup */
+function confirmDialog(o){
+  const p = dialogChain.then(() => openDialog(o));
+  dialogChain = p.catch(() => {});
+  return p;
+}
+function openDialog(o){
+  return new Promise(resolve => {
+    const info = o.cancelText === null;
+    if (!window.bootstrap){
+      const tmp = document.createElement('div'); tmp.innerHTML = o.html || esc(o.body || '');
+      const t = (o.title ? o.title + '\n\n' : '') + tmp.textContent;
+      if (info){ window.alert(t); resolve(true); } else resolve(window.confirm(t));
+      return;
+    }
+    const m = $('#confirmModal'), ok = $('#confirmOk'), cancel = $('#confirmCancel');
+    $('#confirmTitle').textContent = o.title || 'Konfirmasi';
+    $('#confirmBody').innerHTML = o.html || '<p class="mb-0">' + esc(o.body || '') + '</p>';
+    ok.textContent = o.okText || 'Ya'; ok.className = o.danger ? 'btn-pb-danger' : 'btn-pb';
+    cancel.hidden = info; cancel.textContent = o.cancelText || 'Batal';
+    const inst = bootstrap.Modal.getOrCreateInstance(m, {backdrop:'static', keyboard:true});
+    let result = false;
+    const onOk = () => { result = true; inst.hide(); }, onCancel = () => inst.hide();
+    ok.addEventListener('click', onOk); cancel.addEventListener('click', onCancel);
+    m.addEventListener('hidden.bs.modal', () => {
+      ok.removeEventListener('click', onOk); cancel.removeEventListener('click', onCancel); resolve(result);
+    }, {once:true});
+    inst.show();
+  });
+}
+
+/* ============================================================
+   Form tambah / edit barang
+   ============================================================ */
+const F = { name:$('#fName'), price:$('#fPrice'), qty:$('#fQty'), status:$('#fStatusForm'), note:$('#fNote') };
+function setErr(input, msg){
+  input.classList.toggle('is-invalid', !!msg);
+  const fb = input.parentElement.querySelector('.invalid-feedback'); if (fb && msg) fb.textContent = msg;
+}
+function setRadioErr(id, msg){ const el = $(id); el.textContent = msg || ''; el.classList.toggle('d-block', !!msg); }
+function clearItemErrors(){
+  [F.name, F.price, F.qty, F.note].forEach(i => setErr(i, ''));
+  setRadioErr('#errCategory', ''); setRadioErr('#errPriority', '');
+}
+function updateTotalPreview(){
+  const p = parseMoney(F.price.value, 'Harga'), q = parseQty(F.qty.value);
+  $('#totalPreview').textContent = fmtRp((p.val || 0) * (q.val || 0));
+}
+function bindMoneyInput(el, after){
+  el.addEventListener('input', () => {
+    const v = el.value;
+    if (/^[\d.]*$/.test(v)){
+      const f = v.replace(/\./g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      if (f !== v){
+        const caret = el.selectionStart, before = v.slice(0, caret).replace(/\./g, '').length;
+        el.value = f; let pos = 0, c = 0;
+        while (pos < f.length && c < before){ if (f[pos] !== '.') c++; pos++; }
+        try { el.setSelectionRange(pos, pos); } catch(e){}
+      }
+    }
+    if (after) after();
+  });
+}
+function openForm(item){
+  if (!window.bootstrap){ toast('Komponen tampilan belum termuat. Muat ulang halaman saat online.', 'error'); return; }
+  editingId = item ? item.id : null;
+  clearItemErrors();
+  $('#itemModalTitle').textContent = item ? 'Edit Rencana Pembelian' : 'Tambah Rencana Pembelian';
+  F.name.value = item ? item.name : '';
+  F.price.value = item ? String(item.price).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+  F.qty.value = item ? String(item.qty) : '1';
+  F.status.value = item ? item.status : 'belum';
+  F.note.value = item ? item.note : '';
+  $$('input[name=category]').forEach(r => r.checked = !!item && r.value === item.category);
+  $$('input[name=priority]').forEach(r => r.checked = !!item && r.value === item.priority);
+  updateTotalPreview();
+  bootstrap.Modal.getOrCreateInstance($('#itemModal')).show();
+}
+$('#itemModal').addEventListener('shown.bs.modal', () => F.name.focus());
+
+function submitItem(e){
+  e.preventDefault();
+  clearItemErrors();
+  let ok = true;
+  const name = F.name.value.trim();
+  if (!name){ setErr(F.name, 'Nama barang wajib diisi.'); ok = false; }
+  else if (name.length > 80){ setErr(F.name, 'Nama barang maksimal 80 karakter.'); ok = false; }
+  const p = parseMoney(F.price.value, 'Harga'); if (p.err){ setErr(F.price, p.err); ok = false; }
+  const q = parseQty(F.qty.value); if (q.err){ setErr(F.qty, q.err); ok = false; }
+  const cat = ($('input[name=category]:checked') || {}).value, pri = ($('input[name=priority]:checked') || {}).value;
+  if (!cat){ setRadioErr('#errCategory', 'Pilih kategori: kebutuhan atau keinginan.'); ok = false; }
+  if (!pri){ setRadioErr('#errPriority', 'Pilih tingkat prioritas.'); ok = false; }
+  const note = F.note.value.trim();
+  if (note.length > 300){ setErr(F.note, 'Catatan maksimal 300 karakter.'); ok = false; }
+  if (!ok){
+    toast('Periksa kembali isian yang ditandai merah.', 'error');
+    const bad = $('#itemForm .is-invalid') || $('#itemForm .invalid-feedback.d-block'); if (bad && bad.scrollIntoView) bad.scrollIntoView({block:'center'});
+    return;
+  }
+  const now = Date.now(), status = F.status.value;
+  if (editingId){
+    const it = S.items.find(x => x.id === editingId);
+    if (!it){ toast('Barang tidak ditemukan. Mungkin sudah dihapus.', 'error'); bootstrap.Modal.getInstance($('#itemModal')).hide(); return; }
+    Object.assign(it, {name, price:p.val, qty:q.val, category:cat, priority:pri, note, updatedAt:now});
+    applyStatus(it, status, now);
+    toast('Perubahan "' + name + '" disimpan.', 'success');
+  } else {
+    const it = {id:rid(), name, price:p.val, qty:q.val, category:cat, priority:pri, status:'belum', note, createdAt:now, updatedAt:now};
+    applyStatus(it, status, now);
+    S.items.push(it); lastAddedId = it.id;
+    toast('"' + name + '" ditambahkan ke daftar.', 'success');
+  }
+  persist(); renderAll();
+  bootstrap.Modal.getInstance($('#itemModal')).hide();
+}
+function applyStatus(it, status, now){
+  it.status = status;
+  if (status === 'sudah'){ if (!it.purchasedAt) it.purchasedAt = now; } else delete it.purchasedAt;
+}
+
+/* ============================================================
+   Aksi daftar
+   ============================================================ */
+async function deleteItem(id){
+  const it = S.items.find(x => x.id === id); if (!it) return;
+  const ok = await confirmDialog({title:'Hapus barang?', body:'"' + it.name + '" akan dihapus dari daftar. Tindakan ini tidak bisa dibatalkan.', okText:'Hapus', danger:true});
+  if (!ok) return;
+  S.items = S.items.filter(x => x.id !== id);
+  persist(); renderAll(); toast('"' + it.name + '" dihapus.', 'success');
+}
+async function clearAll(){
+  if (!S.items.length){ toast('Daftar sudah kosong.', 'info'); return; }
+  const ok = await confirmDialog({title:'Hapus seluruh daftar?', body:'Semua ' + S.items.length + ' barang akan dihapus. Batas anggaran tidak ikut terhapus. Ekspor dulu jika kamu ingin menyimpan cadangan. Tindakan ini tidak bisa dibatalkan.', okText:'Hapus semua', danger:true});
+  if (!ok) return;
+  S.items = []; persist(); renderAll(); toast('Seluruh daftar dihapus.', 'success');
+}
+function changeStatus(id, status){
+  const it = S.items.find(x => x.id === id); if (!it || !has(STATUS, status)) return;
+  applyStatus(it, status, Date.now()); it.updatedAt = Date.now();
+  persist(); renderAll(); toast('Status "' + it.name + '": ' + STATUS[status].label + '.', 'success');
+}
+
+/* ============================================================
+   Anggaran
+   ============================================================ */
+function submitBudget(e){
+  e.preventDefault();
+  const inp = $('#budgetInput'), r = parseMoney(inp.value, 'Batas anggaran');
+  if (r.err){ inp.classList.add('is-invalid'); $('#budgetErr').textContent = r.err; return; }
+  inp.classList.remove('is-invalid');
+  S.budget = r.val; persist(); renderBudget(); syncControls();
+  toast('Batas anggaran disimpan: ' + fmtRp(r.val) + '.', 'success');
+}
+function clearBudget(){
+  S.budget = null; persist(); renderBudget(); syncControls(); toast('Batas anggaran dihapus.', 'info');
+}
+
+/* ============================================================
+   Ekspor / impor
+   ============================================================ */
+function exportData(){
+  try {
+    const payload = {app:'PrioriBuy', version:1, exportedAt:new Date().toISOString(), budget:S.budget, items:S.items};
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+    const a = document.createElement('a'), d = new Date();
+    const stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    a.href = URL.createObjectURL(blob); a.download = 'prioribuy-data-' + stamp + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    toast('Data diekspor (' + S.items.length + ' barang).', 'success');
+  } catch(err){ toast('Ekspor gagal. Coba lagi atau gunakan browser lain.', 'error'); }
+}
+async function onImportFile(){
+  const input = $('#importFile'), file = input.files && input.files[0];
+  if (!file) return;
+  try {
+    if (file.size > 2 * 1024 * 1024){ toast('Impor gagal: file terlalu besar (maksimal 2 MB).', 'error'); return; }
+    let data;
+    try { data = JSON.parse(await file.text()); }
+    catch(e){ toast('Impor gagal: isi file bukan JSON yang valid. Data kamu tidak berubah.', 'error'); return; }
+    const r = validateImport(data);
+    if (r.errors.length){
+      const shown = r.errors.slice(0, 6).map(x => '<li>' + esc(x) + '</li>').join('');
+      await confirmDialog({title:'Impor dibatalkan', okText:'Mengerti', cancelText:null,
+        html:'<p>File tidak lolos pemeriksaan, jadi data kamu <b>tidak diubah</b>.</p><ul class="small mb-0">' + shown + '</ul>' + (r.errors.length > 6 ? '<p class="small mt-2 mb-0">…dan ' + (r.errors.length - 6) + ' masalah lain.</p>' : '')});
+      toast('Impor gagal: ' + r.errors.length + ' masalah ditemukan pada file.', 'error');
+      return;
+    }
+    const ok = await confirmDialog({title:'Ganti data dengan file ini?',
+      html:'<p>File berisi <b>' + r.items.length + ' barang</b>' + (r.budget !== undefined ? (r.budget === null ? ' tanpa batas anggaran' : ' dan batas anggaran ' + fmtRp(r.budget)) : '') + '.</p>' +
+           '<p class="mb-0">Impor akan <b>mengganti</b> ' + S.items.length + ' barang yang ada sekarang. Ekspor dulu jika kamu ingin menyimpan cadangan.</p>',
+      okText:'Impor & ganti'});
+    if (!ok) return;
+    S.items = r.items; if (r.budget !== undefined) S.budget = r.budget;
+    persist(); syncControls(); renderAll();
+    toast('Impor berhasil: ' + r.items.length + ' barang dimuat.', 'success');
+  } catch(err){
+    toast('Impor gagal karena terjadi kesalahan. Data kamu tidak berubah.', 'error');
+  } finally { input.value = ''; }
+}
+
+/* ============================================================
+   Akun lokal: daftar, masuk, keluar
+   ============================================================ */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+let failCount = 0, lockUntil = 0;
+function showAuth(){
+  $('#appView').hidden = true; $('#authView').hidden = false; document.title = 'Masuk — PrioriBuy Planner';
+}
+function showApp(){
+  $('#authView').hidden = true; $('#appView').hidden = false; document.title = 'PrioriBuy Smart Spending Planner';
+  $('#userName').textContent = user.name; $('#userAvatar').textContent = (user.name.trim()[0] || 'U').toUpperCase();
+  $('#greeting').textContent = 'Halo, ' + user.name.trim().split(/\s+/)[0] + '!';
+  syncControls(); renderAll();
+}
+function startSession(u){
+  user = u; searchQ = '';
+  const r = readJSON(K.data(u.id));
+  if (!r.ok && r.err === 'corrupt') toast('Data tersimpan rusak dan tidak bisa dibaca, jadi daftar dimulai dari kosong.', 'error', 9000);
+  S = sanitizeData(r.val);
+  if (S.dropped) toast(S.dropped + ' barang pada data tersimpan tidak valid dan dilewati.', 'error', 8000);
+  showApp();
+}
+function switchTab(which){
+  const login = which === 'login';
+  $('#tabLogin').classList.toggle('active', login); $('#tabRegister').classList.toggle('active', !login);
+  $('#tabLogin').setAttribute('aria-selected', login); $('#tabRegister').setAttribute('aria-selected', !login);
+  $('#loginForm').hidden = !login; $('#registerForm').hidden = login;
+  $$('#authView .is-invalid').forEach(i => i.classList.remove('is-invalid')); $('#loginError').hidden = true;
+}
+async function onRegister(e){
+  e.preventDefault();
+  const name = $('#regName').value.trim(), email = $('#regEmail').value.trim().toLowerCase();
+  const pw = $('#regPass').value, pw2 = $('#regPass2').value;
+  let ok = true;
+  const chk = (id, bad, msg) => { setErr($(id), bad ? msg : ''); if (bad) ok = false; };
+  chk('#regName', !name, 'Nama wajib diisi.');
+  chk('#regEmail', !EMAIL_RE.test(email), 'Masukkan alamat email yang valid.');
+  chk('#regPass', pw.length < 6, 'Kata sandi minimal 6 karakter.');
+  chk('#regPass2', pw2 !== pw, 'Kata sandi tidak sama.');
+  if (!ok) return;
+  const users = getUsers();
+  if (users.some(u => u.email === email)){ setErr($('#regEmail'), 'Email ini sudah terdaftar. Silakan masuk.'); return; }
+  const btn = $('#registerBtn'); btn.disabled = true;
+  try {
+    const salt = randomHex(16), h = await hashPw(pw, salt);
+    const u = {id:'u' + randomHex(6), name, email, salt, algo:h.algo, hash:h.hash, createdAt:Date.now()};
+    users.push(u);
+    if (!writeJSON(K.users, users)){ toast('Akun gagal dibuat karena penyimpanan browser tidak tersedia atau penuh.', 'error'); return; }
+    writeJSON(K.session, {uid:u.id, at:Date.now()});
+    $('#registerForm').reset(); startSession(u);
+    toast('Akun dibuat. Selamat datang, ' + name.split(/\s+/)[0] + '!', 'success');
+  } catch(err){ toast('Pendaftaran gagal. Coba lagi.', 'error'); }
+  finally { btn.disabled = false; }
+}
+async function onLogin(e){
+  e.preventDefault();
+  const email = $('#loginEmail').value.trim().toLowerCase(), pw = $('#loginPass').value, errBox = $('#loginError');
+  errBox.hidden = true;
+  let ok = true;
+  setErr($('#loginEmail'), EMAIL_RE.test(email) ? '' : 'Masukkan alamat email yang valid.'); if (!EMAIL_RE.test(email)) ok = false;
+  setErr($('#loginPass'), pw ? '' : 'Kata sandi wajib diisi.'); if (!pw) ok = false;
+  if (!ok) return;
+  if (Date.now() < lockUntil){ errBox.hidden = false; $('span', errBox).textContent = 'Terlalu banyak percobaan. Tunggu ' + Math.ceil((lockUntil - Date.now()) / 1000) + ' detik lalu coba lagi.'; return; }
+  const btn = $('#loginBtn'); btn.disabled = true;
+  try {
+    const u = getUsers().find(x => x.email === email);
+    if (u && await verifyPw(u, pw)){
+      failCount = 0; writeJSON(K.session, {uid:u.id, at:Date.now()});
+      $('#loginForm').reset(); startSession(u); toast('Berhasil masuk. Selamat datang kembali!', 'success');
+    } else {
+      if (++failCount >= 5){ lockUntil = Date.now() + 30000; failCount = 0; }
+      errBox.hidden = false; $('span', errBox).textContent = 'Email atau kata sandi salah.';
+    }
+  } catch(err){ toast('Proses masuk gagal. Coba lagi.', 'error'); }
+  finally { btn.disabled = false; }
+}
+function logout(){
+  try { localStorage.removeItem(K.session); } catch(e){}
+  user = null; S = null; searchQ = '';
+  switchTab('login'); showAuth(); window.scrollTo(0, 0);
+  toast('Kamu sudah keluar. Data tetap tersimpan di perangkat ini.', 'info');
+}
+
+/* ============================================================
+   Demo interaktif (contoh tetap, tidak menyentuh penyimpanan)
+   ============================================================ */
+const DEMO = {
+  tinggi:{icon:'bi-person-badge', label:'Prioritas Tinggi', name:'Seragam baru sekolah', price:900000,  note:'Kebutuhan sekolah yang mendesak, jadi layak didahulukan.'},
+  sedang:{icon:'bi-pencil',       label:'Prioritas Sedang', name:'Alat tulis sekolah',   price:100000,  note:'Dibutuhkan, tetapi bisa dibeli bertahap sesuai kebutuhan.'},
+  rendah:{icon:'bi-bag-heart',    label:'Prioritas Rendah', name:'Sepatu baru Nike',     price:2400000, note:'Lebih ke keinginan dan bisa ditunda; sepatu lama masih layak pakai.'}
+};
+function renderDemo(lvl){
+  const d = DEMO[lvl]; if (!d) return;
+  $('#demoCard').dataset.level = lvl;
+  $('#demoIcon').innerHTML = '<i class="bi ' + d.icon + '"></i>';
+  const chip = $('#demoChip'); chip.textContent = d.label; chip.className = 'chip chip-' + lvl;
+  $('#demoTitle').textContent = d.name; $('#demoPrice').textContent = fmtRp(d.price); $('#demoNote').textContent = d.note;
+}
+
+/* ============================================================
+   Event
+   ============================================================ */
+$('#tabLogin').addEventListener('click', () => switchTab('login'));
+$('#tabRegister').addEventListener('click', () => switchTab('register'));
+$('#loginForm').addEventListener('submit', onLogin);
+$('#registerForm').addEventListener('submit', onRegister);
+$$('[data-eye]').forEach(b => b.addEventListener('click', () => {
+  const i = document.getElementById(b.dataset.eye), show = i.type === 'password';
+  i.type = show ? 'text' : 'password'; b.innerHTML = '<i class="bi ' + (show ? 'bi-eye-slash' : 'bi-eye') + '"></i>';
+  b.setAttribute('aria-label', show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+}));
+$$('.pill').forEach(b => b.addEventListener('click', () => {
+  $$('.pill').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed', 'false'); });
+  b.classList.add('active'); b.setAttribute('aria-pressed', 'true'); renderDemo(b.dataset.level);
+}));
+
+$('#itemForm').addEventListener('submit', submitItem);
+bindMoneyInput(F.price, updateTotalPreview); F.qty.addEventListener('input', updateTotalPreview);
+bindMoneyInput($('#budgetInput'), () => $('#budgetInput').classList.remove('is-invalid'));
+$('#budgetForm').addEventListener('submit', submitBudget);
+$('#budgetClear').addEventListener('click', clearBudget);
+$('#importFile').addEventListener('change', onImportFile);
+
+$('#searchInput').addEventListener('input', e => { searchQ = e.target.value; renderList(); });
+[['#sortSelect','sort'], ['#fCategory','category'], ['#fPriority','priority'], ['#fStatus','status']].forEach(([sel, key]) =>
+  $(sel).addEventListener('change', e => { S.prefs[key] = e.target.value; persist(); renderList(); }));
+
+$('#listBox').addEventListener('change', e => {
+  const sel = e.target.closest('.status-select'); if (sel) changeStatus(sel.dataset.id, sel.value);
+});
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]'); if (!el) return;
+  const id = el.dataset.id;
+  switch (el.dataset.action){
+    case 'add': openForm(null); break;
+    case 'edit': openForm(S.items.find(x => x.id === id)); break;
+    case 'delete': deleteItem(id); break;
+    case 'export': exportData(); break;
+    case 'import': $('#importFile').click(); break;
+    case 'clear': clearAll(); break;
+    case 'logout': logout(); break;
+    case 'reset-filters':
+      searchQ = ''; S.prefs.category = S.prefs.priority = S.prefs.status = 'all'; persist(); syncControls(); renderList(); break;
+    case 'install':
+      if (window.PBInstall && PBInstall.canPrompt()) PBInstall.prompt();
+      else toast(window.PBInstall ? PBInstall.steps() : 'Gunakan menu browser lalu pilih "Instal aplikasi".', 'info', 10000);
+      break;
+  }
+});
+
+/* PWA: tombol pasang selalu ada selama belum terpasang (event instal tidak tersedia di semua browser; petunjuk manual sebagai cadangan) */
+const syncInstall = () => { $('#installItem').hidden = !!(window.PBInstall && PBInstall.standalone()); };
+window.addEventListener('pb-install-change', syncInstall);
+window.addEventListener('appinstalled', () => { syncInstall(); toast('PrioriBuy berhasil dipasang di perangkatmu.', 'success'); });
+const syncOnline = () => { $('#offlineBadge').hidden = navigator.onLine; };
+window.addEventListener('online', () => { syncOnline(); toast('Kembali online.', 'info', 2500); });
+window.addEventListener('offline', () => { syncOnline(); toast('Kamu sedang offline. Aplikasi tetap bisa dipakai dan datamu aman.', 'info'); });
+
+/* sinkron antar tab (keluar / perubahan data dari tab lain) */
+window.addEventListener('storage', e => {
+  if (!user) return;
+  if (e.key === K.session && !e.newValue){ user = null; S = null; showAuth(); return; }
+  if (e.key === K.data(user.id) && e.newValue){
+    const prefs = S.prefs; S = sanitizeData(readJSON(K.data(user.id)).val); S.prefs = prefs; syncControls(); renderAll();
+  }
+});
+
+/* ============================================================
+   Mulai
+   ============================================================ */
+function init(){
+  syncOnline(); syncInstall();
+  if (!window.bootstrap) $('#cdnWarning').hidden = false;
+  const sess = readJSON(K.session).val;
+  const u = sess && getUsers().find(x => x.id === sess.uid);
+  if (u) startSession(u); else showAuth();
+  const boot = $('#boot'); boot.classList.add('hide'); setTimeout(() => boot.remove(), 400);
+}
+init();
+})();
+</script>
+</body>
+</html>

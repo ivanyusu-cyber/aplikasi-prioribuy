@@ -1,0 +1,11 @@
+# Cloudflare Pages — header untuk PWA (aman juga bila file ini diabaikan di hosting lain)
+/sw.js
+  Cache-Control: no-cache
+  Service-Worker-Allowed: /
+/manifest.json
+  Content-Type: application/manifest+json
+  Cache-Control: no-cache
+/app.html
+  Cache-Control: no-cache
+/assets/*
+  Cache-Control: public, max-age=86400
