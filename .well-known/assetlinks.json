@@ -1,1 +1,9 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.aplikasiprioribuy.twa",
+        "sha256_cert_fingerprints": ["57:AA:71:E2:E1:3A:D5:5A:99:F7:D1:DB:FF:86:1B:3A:84:19:13:79:31:5E:E5:A5:50:4E:8D:1F:90:D0:2F:8D"]
+      }
+    }]
 
